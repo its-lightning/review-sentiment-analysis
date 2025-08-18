@@ -1,0 +1,15 @@
+All_Beauty.jsonl
+test.ft.txt
+
+*.jsonl
+*.csv
+*.tsv
+*.txt
+
+.ipynb_checkpoints/
+
+*.h5
+*.pkl
+*.ckpt
+*.pt
+*.pth
