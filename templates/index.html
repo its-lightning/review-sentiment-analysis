@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎥 YouTube Sentiment Analyzer</title>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="background-gradient"></div>
+  
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <h1 class="title">🎥 YouTube Sentiment Analyzer</h1>
+        <p class="subtitle">Analyze the sentiment of YouTube comments in real-time</p>
+      </div>
+    </header>
+
+    <!-- Input Section -->
+    <section class="input-section">
+      <div class="input-group">
+        <input 
+          type="text" 
+          id="youtubeLink" 
+          class="url-input" 
+          placeholder="Paste your YouTube URL here... (youtube.com or youtu.be)"
+          autocomplete="off"
+        >
+        <button id="analyzeBtn" class="analyze-btn">
+          <span class="btn-text">Analyze</span>
+          <span class="btn-icon">→</span>
+        </button>
+      </div>
+      <p class="input-hint">Supports: youtube.com/watch?v=... or youtu.be/...</p>
+    </section>
+
+    <!-- Status Section -->
+    <section class="status-section" id="statusSection" style="display: none;">
+      <div class="status-card">
+        <div class="spinner"></div>
+        <p id="statusText" class="status-text">Starting analysis...</p>
+        
+        <div class="progress-container">
+          <div class="progress-label">
+            <span>Processing Progress</span>
+            <span id="progressPercentage">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section" id="resultsSection" style="display: none;">
+      <!-- Summary Stats -->
+      <div class="summary-stats">
+        <div class="stat-card rating-card">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-content">
+            <p class="stat-label">Average Rating</p>
+            <p class="stat-value" id="avgRating">-</p>
+          </div>
+        </div>
+
+        <div class="stat-card total-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-content">
+            <p class="stat-label">Total Comments</p>
+            <p class="stat-value" id="totalComments">-</p>
+          </div>
+        </div>
+
+        <div class="stat-card valid-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-content">
+            <p class="stat-label">Analyzed</p>
+            <p class="stat-value" id="validComments">-</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sentiment Breakdown -->
+      <div class="sentiment-breakdown">
+        <h3>Sentiment Distribution</h3>
+        <div class="sentiment-bars">
+          <div class="sentiment-item">
+            <div class="sentiment-label">
+              <span>😢 Negative</span>
+              <span id="negativeCount">0</span>
+            </div>
+            <div class="sentiment-bar-bg">
+              <div class="sentiment-bar negative" id="negativeBar" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="sentiment-item">
+            <div class="sentiment-label">
+              <span>😐 Neutral</span>
+              <span id="neutralCount">0</span>
+            </div>
+            <div class="sentiment-bar-bg">
+              <div class="sentiment-bar neutral" id="neutralBar" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="sentiment-item">
+            <div class="sentiment-label">
+              <span>😊 Positive</span>
+              <span id="positiveCount">0</span>
+            </div>
+            <div class="sentiment-bar-bg">
+              <div class="sentiment-bar positive" id="positiveBar" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results List -->
+      <div class="results-header">
+        <h3>Comments Analysis</h3>
+        <div class="results-controls">
+          <select id="sentimentFilter" class="filter-select">
+            <option value="all">All Sentiments</option>
+            <option value="Positive">😊 Positive</option>
+            <option value="Neutral">😐 Neutral</option>
+            <option value="Negative">😢 Negative</option>
+          </select>
+          <button id="newAnalysisBtn" class="new-analysis-btn">← New Analysis</button>
+        </div>
+      </div>
+
+      <div id="results" class="results-list"></div>
+    </section>
+
+    <!-- Error Section -->
+    <section id="errorSection" style="display: none;">
+      <div class="error-card">
+        <p class="error-icon">⚠️</p>
+        <p id="errorMessage" class="error-text"></p>
+        <button id="errorRetryBtn" class="retry-btn">Try Again</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const socket = io();
+    
+    // DOM Elements
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const newAnalysisBtn = document.getElementById('newAnalysisBtn');
+    const youtubeLink = document.getElementById('youtubeLink');
+    const progressBar = document.getElementById('progressBar');
+    const progressPercentage = document.getElementById('progressPercentage');
+    const statusText = document.getElementById('statusText');
+    const resultsDiv = document.getElementById('results');
+    
+    const statusSection = document.getElementById('statusSection');
+    const resultsSection = document.getElementById('resultsSection');
+    const errorSection = document.getElementById('errorSection');
+    
+    let isProcessing = false;
+    let allResults = [];
+    let sentimentCounts = {};
+
+    // Initialize
+    youtubeLink.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !isProcessing) {
+        analyzeBtn.click();
+      }
+    });
+
+    analyzeBtn.addEventListener('click', () => {
+      const url = youtubeLink.value.trim();
+      if (!url) {
+        showError('Please enter a YouTube URL');
+        return;
+      }
+
+      if (!isValidYouTubeUrl(url)) {
+        showError('Invalid YouTube URL. Please use youtube.com or youtu.be');
+        return;
+      }
+
+      startAnalysis(url);
+    });
+
+    newAnalysisBtn.addEventListener('click', resetUI);
+
+    document.getElementById('sentimentFilter').addEventListener('change', (e) => {
+      filterResults(e.target.value);
+    });
+
+    document.getElementById('errorRetryBtn').addEventListener('click', resetUI);
+
+    function isValidYouTubeUrl(url) {
+      const patterns = [
+        /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=/,
+        /(?:https?:\/\/)?(?:www\.)?youtu\.be\//,
+        /(?:https?:\/\/)?(?:www\.)?youtube\.com\/embed\//
+      ];
+      return patterns.some(pattern => pattern.test(url));
+    }
+
+    function startAnalysis(url) {
+      isProcessing = true;
+      analyzeBtn.disabled = true;
+      resetUI();
+      
+      statusSection.style.display = 'block';
+      resultsSection.style.display = 'none';
+      errorSection.style.display = 'none';
+      
+      progressBar.style.width = '0%';
+      progressPercentage.textContent = '0%';
+      
+      socket.emit('process_video', { url });
+    }
+
+    function resetUI() {
+      isProcessing = false;
+      analyzeBtn.disabled = false;
+      statusSection.style.display = 'none';
+      resultsSection.style.display = 'none';
+      errorSection.style.display = 'none';
+      progressBar.style.width = '0%';
+      progressPercentage.textContent = '0%';
+      resultsDiv.innerHTML = '';
+      youtubeLink.value = '';
+      allResults = [];
+      document.getElementById('sentimentFilter').value = 'all';
+    }
+
+    function showError(message) {
+      errorSection.style.display = 'block';
+      statusSection.style.display = 'none';
+      resultsSection.style.display = 'none';
+      document.getElementById('errorMessage').textContent = message;
+    }
+
+    function filterResults(sentiment) {
+      const resultCards = document.querySelectorAll('.result-card');
+      resultCards.forEach(card => {
+        if (sentiment === 'all' || card.dataset.sentiment === sentiment) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function getSentimentEmoji(sentiment) {
+      const emojiMap = {
+        'Positive': '😊',
+        'Neutral': '😐',
+        'Negative': '😢'
+      };
+      return emojiMap[sentiment] || '😐';
+    }
+
+    function getSentimentColor(sentiment) {
+      const colorMap = {
+        'Positive': '#10b981',
+        'Neutral': '#f59e0b',
+        'Negative': '#ef4444'
+      };
+      return colorMap[sentiment] || '#6b7280';
+    }
+
+    socket.on('status', (data) => {
+      statusText.textContent = data.message;
+    });
+
+    socket.on('progress', (data) => {
+      const percent = Math.min(99, data.progress);
+      progressBar.style.width = `${percent}%`;
+      progressPercentage.textContent = `${percent}%`;
+    });
+
+    socket.on('done', (data) => {
+      progressBar.style.width = '100%';
+      progressPercentage.textContent = '100%';
+      
+      isProcessing = false;
+      analyzeBtn.disabled = false;
+      
+      statusSection.style.display = 'none';
+      resultsSection.style.display = 'block';
+      errorSection.style.display = 'none';
+      
+      allResults = data.results;
+      sentimentCounts = data.sentiment_counts;
+      
+      // Update summary stats
+      document.getElementById('avgRating').textContent = data.average_rating || 'N/A';
+      document.getElementById('totalComments').textContent = data.total;
+      document.getElementById('validComments').textContent = data.valid_count;
+      
+      // Update sentiment counts
+      document.getElementById('negativeCount').textContent = sentimentCounts.Negative;
+      document.getElementById('neutralCount').textContent = sentimentCounts.Neutral;
+      document.getElementById('positiveCount').textContent = sentimentCounts.Positive;
+      
+      // Update sentiment bars
+      const total = data.valid_count;
+      if (total > 0) {
+        document.getElementById('negativeBar').style.width = `${(sentimentCounts.Negative / total) * 100}%`;
+        document.getElementById('neutralBar').style.width = `${(sentimentCounts.Neutral / total) * 100}%`;
+        document.getElementById('positiveBar').style.width = `${(sentimentCounts.Positive / total) * 100}%`;
+      }
+      
+      // Display results
+      displayResults();
+    });
+
+    socket.on('error', (data) => {
+      isProcessing = false;
+      analyzeBtn.disabled = false;
+      showError(data.message);
+    });
+
+    function displayResults() {
+      resultsDiv.innerHTML = '';
+      
+      if (allResults.length === 0) {
+        resultsDiv.innerHTML = '<p class="no-results">No results to display</p>';
+        return;
+      }
+      
+      allResults.forEach((result, index) => {
+        const color = getSentimentColor(result.sentiment);
+        const emoji = getSentimentEmoji(result.sentiment);
+        
+        const card = document.createElement('div');
+        card.className = 'result-card';
+        card.dataset.sentiment = result.sentiment;
+        card.style.borderLeftColor = color;
+        
+        card.innerHTML = `
+          <div class="result-header">
+            <span class="result-sentiment" style="color: ${color}">
+              ${emoji} ${result.sentiment}
+            </span>
+            <span class="result-confidence">${(result.confidence * 100).toFixed(1)}% confidence</span>
+          </div>
+          <p class="result-comment">${escapeHtml(result.comment)}</p>
+          <div class="result-footer">
+            <span class="result-rating">⭐ ${result.rating}/5.0</span>
+          </div>
+        `;
+        
+        resultsDiv.appendChild(card);
+      });
+    }
+
+    function escapeHtml(text) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, m => map[m]);
+    }
+  </script>
+</body>
+</html>
