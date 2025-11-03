@@ -214,6 +214,14 @@ body {
   margin-top: 30px;
 }
 
+.progress-section {
+  margin-bottom: 25px;
+}
+
+.progress-section:last-child {
+  margin-bottom: 0;
+}
+
 .progress-label {
   display: flex;
   justify-content: space-between;
@@ -234,11 +242,19 @@ body {
 
 .progress-bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary), var(--secondary));
   border-radius: 10px;
   width: 0%;
   transition: width 0.3s ease;
+}
+
+.download-bar {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
   box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.analysis-bar {
+  background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
 }
 
 /* ===== Results Section ===== */

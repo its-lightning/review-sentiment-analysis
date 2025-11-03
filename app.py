@@ -10,6 +10,12 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import logging
+import warnings
+from queue import Queue
+from threading import Thread
+
+# Suppress XGBoost pickle warnings
+warnings.filterwarnings('ignore', category=UserWarning)
 
 # --- Logging setup ---
 logging.basicConfig(level=logging.INFO)
@@ -18,24 +24,50 @@ logger = logging.getLogger(__name__)
 # --- Flask setup ---
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
-socketio = SocketIO(app, cors_allowed_origins=["http://localhost:5050", "http://localhost:3000"])
+socketio = SocketIO(
+    app,
+    cors_allowed_origins="*",
+    async_mode='threading',
+    ping_timeout=60,
+    ping_interval=25,
+    max_http_buffer_size=1e6,
+    engineio_logger=False,
+    socketio_logger=False
+)
 
 # --- Load ML models ---
 try:
     ensemble_model = joblib.load("ensemble_sentiment_model.pkl")
     tfidf_vectorizer = joblib.load("tfidf_vectorizer.pkl")
-    logger.info("Models loaded successfully")
+    logger.info("✅ Models loaded successfully")
 except FileNotFoundError as e:
-    logger.critical(f"Model files not found: {e}")
+    logger.critical(f"❌ Model files not found: {e}")
     raise
 
-# --- NLTK setup ---
+# --- NLTK setup (try to use cached data, skip if offline) ---
 try:
-    nltk.download("stopwords", quiet=True)
-    nltk.download("punkt", quiet=True)
-    nltk.download("wordnet", quiet=True)
-except Exception as e:
-    logger.warning(f"NLTK download issue: {e}")
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    try:
+        nltk.download("stopwords", quiet=True)
+    except Exception as e:
+        logger.warning(f"Could not download stopwords: {e}")
+
+try:
+    nltk.data.find('tokenizers/punkt_tab')
+except LookupError:
+    try:
+        nltk.download("punkt_tab", quiet=True)
+    except Exception as e:
+        logger.warning(f"Could not download punkt_tab: {e}")
+
+try:
+    nltk.data.find('corpora/wordnet')
+except LookupError:
+    try:
+        nltk.download("wordnet", quiet=True)
+    except Exception as e:
+        logger.warning(f"Could not download wordnet: {e}")
 
 stop_words = set(stopwords.words("english"))
 lemmatizer = WordNetLemmatizer()
@@ -85,120 +117,165 @@ def convert_to_rating(sentiment_probs):
 # --- SocketIO route for processing ---
 @socketio.on("process_video")
 def handle_process_video(data):
-    """Handle video processing request"""
+    """Handle video processing request with async analysis"""
     video_url = data.get("url", "").strip()
+    
+    logger.info(f"🎬 Received request for video: {video_url}")
     
     if not video_url:
         emit("error", {"message": "No URL provided"})
-        logger.warning("Empty URL provided")
+        logger.warning("❌ Empty URL provided")
         return
     
     if not is_valid_youtube_url(video_url):
         emit("error", {"message": "Invalid YouTube URL. Please enter a valid youtube.com or youtu.be link"})
-        logger.warning(f"Invalid URL format: {video_url}")
+        logger.warning(f"❌ Invalid URL format: {video_url}")
         return
 
-    emit("status", {"message": "🔍 Downloading comments..."})
-    logger.info(f"Starting to process video: {video_url}")
+    emit("status", {"message": "🔍 Downloading and analyzing comments..."})
+    emit("progress", {"stage": "download", "value": 0})
+    logger.info(f"📥 Starting async processing for video: {video_url}")
     
-    try:
-        downloader = YoutubeCommentDownloader()
-        comments_data = downloader.get_comments_from_url(video_url)
-        comments = [c.get("text", "") for c in comments_data if c.get("text")]
+    # Queues for thread communication
+    comment_queue = Queue()
+    results_queue = Queue()
+    
+    def downloader_worker():
+        """Download comments and put them in queue"""
+        try:
+            logger.info("📥 Downloader worker started")
+            downloader = YoutubeCommentDownloader()
+            comment_count = 0
+            comments_to_process = None
+            
+            for comment in downloader.get_comments_from_url(video_url):
+                text = comment.get("text", "")
+                if text:
+                    comment_queue.put(("comment", text))
+                    comment_count += 1
+                    
+                    # Emit download progress every 50 comments
+                    if comment_count % 50 == 0:
+                        logger.info(f"📥 Downloaded {comment_count} comments")
+                        socketio.emit("progress", {"stage": "download", "value": comment_count})
+            
+            comments_to_process = comment_count
+            comment_queue.put(("total_comments", comments_to_process))
+            comment_queue.put(("done", None))
+            logger.info(f"✅ Download complete: {comment_count} total comments")
+            socketio.emit("status", {"message": f"✅ Downloaded {comment_count} comments. Analyzing..."})
+            socketio.emit("progress", {"stage": "download", "value": comment_count})
+            
+        except Exception as e:
+            logger.error(f"❌ Download error: {e}")
+            comment_queue.put(("error", str(e)))
+    
+    def analyzer_worker():
+        """Analyze comments as they arrive"""
+        labels = ["Negative", "Neutral", "Positive"]
+        threshold = 0.50
+        valid_results = []
+        total_comments = 0
+        total_to_analyze = 0
+        sentiment_counts = {label: 0 for label in labels}
         
-    except ValueError as e:
-        emit("error", {"message": "Invalid YouTube URL or video not found"})
-        logger.error(f"ValueError: {e}")
-        return
-    except ConnectionError:
-        emit("error", {"message": "Network error. Please check your connection"})
-        logger.error("Connection error while downloading comments")
-        return
-    except Exception as e:
-        emit("error", {"message": f"Failed to fetch comments: {str(e)}"})
-        logger.error(f"Unexpected error: {e}")
-        return
-
-    if not comments:
-        emit("error", {"message": "No comments found on this video or comments are disabled"})
-        logger.info(f"No comments found for video: {video_url}")
-        return
-
-    emit("status", {"message": f"✅ Downloaded {len(comments)} comments"})
-    logger.info(f"Downloaded {len(comments)} comments")
-    
-    total = len(comments)
-    processed = []
-
-    emit("status", {"message": "📝 Preprocessing text..."})
-    
-    for i, c in enumerate(comments):
-        processed.append(preprocess_text(c))
+        try:
+            logger.info("🤖 Analyzer worker started")
+            while True:
+                msg_type, msg_data = comment_queue.get()
+                
+                if msg_type == "error":
+                    logger.error(f"❌ Error from downloader: {msg_data}")
+                    results_queue.put(("error", msg_data))
+                    break
+                
+                elif msg_type == "total_comments":
+                    total_to_analyze = msg_data
+                    logger.info(f"🤖 Will analyze {total_to_analyze} comments")
+                
+                elif msg_type == "done":
+                    logger.info(f"✅ Analysis complete: {len(valid_results)} valid out of {total_comments} comments")
+                    results_queue.put(("done", {
+                        "valid_count": len(valid_results),
+                        "total_count": total_comments,
+                        "sentiment_counts": sentiment_counts,
+                        "results": valid_results
+                    }))
+                    break
+                
+                elif msg_type == "comment":
+                    total_comments += 1
+                    text = preprocess_text(msg_data)
+                    
+                    # Analyze single comment
+                    try:
+                        X = tfidf_vectorizer.transform([text])
+                        prob = ensemble_model.predict_proba(X)[0]
+                        pred = np.argmax(prob)
+                        rating = convert_to_rating([prob])[0]
+                        confidence = prob[pred]
+                        
+                        # If meets threshold, add to results
+                        if confidence >= threshold:
+                            valid_results.append({
+                                "comment": msg_data,
+                                "sentiment": labels[pred],
+                                "confidence": round(confidence, 3),
+                                "rating": round(rating, 2)
+                            })
+                            sentiment_counts[labels[pred]] += 1
+                        
+                        # Emit progress every 50 comments
+                        if total_comments % 50 == 0:
+                            progress = int((total_comments / max(1, total_to_analyze)) * 100) if total_to_analyze > 0 else 0
+                            logger.info(f"🤖 Analyzed {total_comments}/{total_to_analyze} comments ({progress}%) | Valid: {len(valid_results)}")
+                            socketio.emit("progress", {"stage": "analysis", "value": progress})
+                        
+                    except Exception as e:
+                        logger.error(f"❌ Analysis error for comment #{total_comments}: {e}")
         
-        # Emit progress every 50 comments or at the end
-        if (i + 1) % 50 == 0 or i == total - 1:
-            progress = int(((i + 1) / total) * 100)
-            socketio.emit("progress", {"progress": progress})
-
-    emit("status", {"message": "🤖 Analyzing sentiments..."})
-    logger.info("Starting sentiment analysis")
+        except Exception as e:
+            logger.error(f"❌ Analyzer worker error: {e}")
+            results_queue.put(("error", str(e)))
     
+    # Start both threads
+    logger.info("🚀 Starting download and analysis threads")
+    downloader_thread = Thread(target=downloader_worker, daemon=True)
+    analyzer_thread = Thread(target=analyzer_worker, daemon=True)
+    
+    downloader_thread.start()
+    analyzer_thread.start()
+    
+    # Wait for results
     try:
-        X = tfidf_vectorizer.transform(processed)
-        probabilities = ensemble_model.predict_proba(X)
-        predictions = np.argmax(probabilities, axis=1)
-        ratings = convert_to_rating(probabilities)
+        result_type, result_data = results_queue.get(timeout=600)  # 10 minute timeout
+        
+        if result_type == "error":
+            logger.error(f"❌ Processing error: {result_data}")
+            emit("error", {"message": f"Processing error: {result_data}"})
+        else:
+            emit("progress", {"stage": "analysis", "value": 100})
+            
+            avg_rating = None
+            if result_data["valid_count"] > 0:
+                avg_rating = np.mean([r["rating"] for r in result_data["results"]])
+            
+            logger.info(f"✅ Processing complete: {result_data['valid_count']} valid out of {result_data['total_count']} total")
+            logger.info(f"📊 Sentiment breakdown: {result_data['sentiment_counts']}")
+            avg_rating_display = round(avg_rating, 2) if avg_rating else "N/A"
+            logger.info(f"⭐ Average rating: {avg_rating_display}")
+            
+            emit("done", {
+                "total": result_data["total_count"],
+                "valid_count": result_data["valid_count"],
+                "average_rating": round(avg_rating, 2) if avg_rating else None,
+                "results": result_data["results"],
+                "sentiment_counts": result_data["sentiment_counts"]
+            })
+    
     except Exception as e:
-        emit("error", {"message": "Error during sentiment analysis"})
-        logger.error(f"Sentiment analysis error: {e}")
-        return
-
-    threshold = 0.3
-    valid = [
-        (c, p, r, probabilities[i][p])
-        for i, (c, p, r) in enumerate(zip(comments, predictions, ratings))
-        if probabilities[i][p] >= threshold
-    ]
-
-    labels = ["Negative", "Neutral", "Positive"]
-    
-    if not valid:
-        logger.info("No comments met confidence threshold")
-        emit("done", {
-            "total": total,
-            "valid_count": 0,
-            "average_rating": None,
-            "results": [],
-            "sentiment_counts": {"Negative": 0, "Neutral": 0, "Positive": 0}
-        })
-        return
-
-    avg_rating = np.mean([v[2] for v in valid])
-    
-    # Count sentiments
-    sentiment_counts = {label: 0 for label in labels}
-    for v in valid:
-        sentiment_counts[labels[v[1]]] += 1
-    
-    results = [
-        {
-            "comment": v[0],
-            "sentiment": labels[v[1]],
-            "confidence": round(v[3], 3),
-            "rating": round(v[2], 2),
-        }
-        for v in valid
-    ]
-
-    logger.info(f"Analysis complete: {len(valid)} valid comments, avg rating: {avg_rating:.2f}")
-    
-    emit("done", {
-        "total": total,
-        "valid_count": len(valid),
-        "average_rating": round(avg_rating, 2),
-        "results": results,
-        "sentiment_counts": sentiment_counts
-    })
+        logger.error(f"❌ Processing failed: {e}")
+        emit("error", {"message": f"Processing failed: {str(e)}"})
 
 
 @app.route("/")

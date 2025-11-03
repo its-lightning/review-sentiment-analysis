@@ -2,10 +2,13 @@ All_Beauty.jsonl
 test.ft.txt
 GB_category_id.json
 
+venv/
+.venv/
+env
+
 *.jsonl
 *.csv
 *.tsv
-*.txt
 
 .ipynb_checkpoints/
 

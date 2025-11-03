@@ -44,12 +44,24 @@
         <p id="statusText" class="status-text">Starting analysis...</p>
         
         <div class="progress-container">
-          <div class="progress-label">
-            <span>Processing Progress</span>
-            <span id="progressPercentage">0%</span>
+          <div class="progress-section">
+            <div class="progress-label">
+              <span>📥 Downloading Comments</span>
+              <span id="downloadPercentage">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar download-bar" id="downloadBar"></div>
+            </div>
           </div>
-          <div class="progress-bar-bg">
-            <div class="progress-bar" id="progressBar"></div>
+
+          <div class="progress-section">
+            <div class="progress-label">
+              <span>🤖 Analyzing Sentiment</span>
+              <span id="analysisPercentage">0%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar analysis-bar" id="analysisBar"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -154,8 +166,10 @@
     const analyzeBtn = document.getElementById('analyzeBtn');
     const newAnalysisBtn = document.getElementById('newAnalysisBtn');
     const youtubeLink = document.getElementById('youtubeLink');
-    const progressBar = document.getElementById('progressBar');
-    const progressPercentage = document.getElementById('progressPercentage');
+    const downloadBar = document.getElementById('downloadBar');
+    const analysisBar = document.getElementById('analysisBar');
+    const downloadPercentage = document.getElementById('downloadPercentage');
+    const analysisPercentage = document.getElementById('analysisPercentage');
     const statusText = document.getElementById('statusText');
     const resultsDiv = document.getElementById('results');
     
@@ -166,6 +180,8 @@
     let isProcessing = false;
     let allResults = [];
     let sentimentCounts = {};
+    let totalCommentsToDownload = 0;
+    let totalCommentsToAnalyze = 0;
 
     // Initialize
     youtubeLink.addEventListener('keypress', (e) => {
@@ -190,12 +206,10 @@
     });
 
     newAnalysisBtn.addEventListener('click', resetUI);
-
+    document.getElementById('errorRetryBtn').addEventListener('click', resetUI);
     document.getElementById('sentimentFilter').addEventListener('change', (e) => {
       filterResults(e.target.value);
     });
-
-    document.getElementById('errorRetryBtn').addEventListener('click', resetUI);
 
     function isValidYouTubeUrl(url) {
       const patterns = [
@@ -215,8 +229,10 @@
       resultsSection.style.display = 'none';
       errorSection.style.display = 'none';
       
-      progressBar.style.width = '0%';
-      progressPercentage.textContent = '0%';
+      downloadBar.style.width = '0%';
+      analysisBar.style.width = '0%';
+      downloadPercentage.textContent = '0%';
+      analysisPercentage.textContent = '0%';
       
       socket.emit('process_video', { url });
     }
@@ -227,8 +243,10 @@
       statusSection.style.display = 'none';
       resultsSection.style.display = 'none';
       errorSection.style.display = 'none';
-      progressBar.style.width = '0%';
-      progressPercentage.textContent = '0%';
+      downloadBar.style.width = '0%';
+      analysisBar.style.width = '0%';
+      downloadPercentage.textContent = '0%';
+      analysisPercentage.textContent = '0%';
       resultsDiv.innerHTML = '';
       youtubeLink.value = '';
       allResults = [];
@@ -273,17 +291,30 @@
 
     socket.on('status', (data) => {
       statusText.textContent = data.message;
+      console.log('Status:', data.message);
     });
 
     socket.on('progress', (data) => {
-      const percent = Math.min(99, data.progress);
-      progressBar.style.width = `${percent}%`;
-      progressPercentage.textContent = `${percent}%`;
+      console.log('Progress:', data);
+      
+      if (data.stage === 'download') {
+        totalCommentsToDownload = data.value;
+        // Show actual counts or percentage
+        downloadBar.style.width = `${Math.min(100, (data.value / 5000) * 100)}%`;
+        downloadPercentage.textContent = `${data.value} comments`;
+      } else if (data.stage === 'analysis') {
+        totalCommentsToAnalyze = data.value;
+        const percentage = totalCommentsToDownload > 0 ? (data.value / totalCommentsToDownload) * 100 : 0;
+        analysisBar.style.width = `${Math.min(100, percentage)}%`;
+        analysisPercentage.textContent = `${data.value}/${totalCommentsToDownload}`;
+      }
     });
 
     socket.on('done', (data) => {
-      progressBar.style.width = '100%';
-      progressPercentage.textContent = '100%';
+      downloadBar.style.width = '100%';
+      analysisBar.style.width = '100%';
+      downloadPercentage.textContent = '100%';
+      analysisPercentage.textContent = '100%';
       
       isProcessing = false;
       analyzeBtn.disabled = false;
