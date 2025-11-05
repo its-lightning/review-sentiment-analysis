@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🎥 YouTube Sentiment Analyzer</title>
+  <title>🎥 YouTube Product Review Analyzer</title>
   <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -14,8 +14,8 @@
     <!-- Header -->
     <header class="header">
       <div class="header-content">
-        <h1 class="title">🎥 YouTube Sentiment Analyzer</h1>
-        <p class="subtitle">Analyze the sentiment of YouTube comments in real-time</p>
+        <h1 class="title">🎥 YouTube Product Review Analyzer</h1>
+        <p class="subtitle">Analyze the sentiment of YouTube Review comments in real-time</p>
       </div>
     </header>
 
@@ -56,7 +56,7 @@
 
           <div class="progress-section">
             <div class="progress-label">
-              <span>🤖 Analyzing Sentiment</span>
+              <span>Analyzing Sentiment</span>
               <span id="analysisPercentage">0%</span>
             </div>
             <div class="progress-bar-bg">
@@ -102,7 +102,7 @@
         <div class="sentiment-bars">
           <div class="sentiment-item">
             <div class="sentiment-label">
-              <span>😢 Negative</span>
+              <span>Negative</span>
               <span id="negativeCount">0</span>
             </div>
             <div class="sentiment-bar-bg">
@@ -112,17 +112,7 @@
 
           <div class="sentiment-item">
             <div class="sentiment-label">
-              <span>😐 Neutral</span>
-              <span id="neutralCount">0</span>
-            </div>
-            <div class="sentiment-bar-bg">
-              <div class="sentiment-bar neutral" id="neutralBar" style="width: 0%"></div>
-            </div>
-          </div>
-
-          <div class="sentiment-item">
-            <div class="sentiment-label">
-              <span>😊 Positive</span>
+              <span>Positive</span>
               <span id="positiveCount">0</span>
             </div>
             <div class="sentiment-bar-bg">
@@ -138,9 +128,8 @@
         <div class="results-controls">
           <select id="sentimentFilter" class="filter-select">
             <option value="all">All Sentiments</option>
-            <option value="Positive">😊 Positive</option>
-            <option value="Neutral">😐 Neutral</option>
-            <option value="Negative">😢 Negative</option>
+            <option value="Positive">Positive</option>
+            <option value="Negative">Negative</option>
           </select>
           <button id="newAnalysisBtn" class="new-analysis-btn">← New Analysis</button>
         </div>
@@ -273,11 +262,11 @@
 
     function getSentimentEmoji(sentiment) {
       const emojiMap = {
-        'Positive': '😊',
-        'Neutral': '😐',
-        'Negative': '😢'
+        'Positive': '',
+        'Neutral': '',
+        'Negative': ''
       };
-      return emojiMap[sentiment] || '😐';
+      return emojiMap[sentiment] || '';
     }
 
     function getSentimentColor(sentiment) {
@@ -333,14 +322,12 @@
       
       // Update sentiment counts
       document.getElementById('negativeCount').textContent = sentimentCounts.Negative;
-      document.getElementById('neutralCount').textContent = sentimentCounts.Neutral;
       document.getElementById('positiveCount').textContent = sentimentCounts.Positive;
       
       // Update sentiment bars
       const total = data.valid_count;
       if (total > 0) {
         document.getElementById('negativeBar').style.width = `${(sentimentCounts.Negative / total) * 100}%`;
-        document.getElementById('neutralBar').style.width = `${(sentimentCounts.Neutral / total) * 100}%`;
         document.getElementById('positiveBar').style.width = `${(sentimentCounts.Positive / total) * 100}%`;
       }
       

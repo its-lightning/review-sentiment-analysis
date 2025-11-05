@@ -1,0 +1,10 @@
+artifact_location: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/414329526688281321/models/m-fe2b98c4e09841c1b3ff5b0c46c1588b/artifacts
+creation_timestamp: 1762302567779
+experiment_id: '414329526688281321'
+last_updated_timestamp: 1762302570859
+model_id: m-fe2b98c4e09841c1b3ff5b0c46c1588b
+model_type: null
+name: ensemble_model
+source_run_id: 34a76261635241fcb0c3da0b860c4645
+status: 2
+status_message: null

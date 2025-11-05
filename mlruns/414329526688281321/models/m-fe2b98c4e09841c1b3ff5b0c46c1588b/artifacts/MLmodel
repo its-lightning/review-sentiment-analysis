@@ -1,0 +1,22 @@
+artifact_path: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/414329526688281321/models/m-fe2b98c4e09841c1b3ff5b0c46c1588b/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.12.6
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.1
+mlflow_version: 3.5.1
+model_id: m-fe2b98c4e09841c1b3ff5b0c46c1588b
+model_size_bytes: 1923949
+model_uuid: m-fe2b98c4e09841c1b3ff5b0c46c1588b
+prompts: null
+run_id: 34a76261635241fcb0c3da0b860c4645
+utc_time_created: '2025-11-05 00:29:27.845295'

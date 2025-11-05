@@ -1,0 +1,10 @@
+artifact_location: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/414329526688281321/models/m-23e221084784425ab4eeeb38b58e7857/artifacts
+creation_timestamp: 1762302570971
+experiment_id: '414329526688281321'
+last_updated_timestamp: 1762302573727
+model_id: m-23e221084784425ab4eeeb38b58e7857
+model_type: null
+name: tfidf_vectorizer
+source_run_id: 34a76261635241fcb0c3da0b860c4645
+status: 2
+status_message: null

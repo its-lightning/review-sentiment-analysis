@@ -1,0 +1,14 @@
+artifact_path: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/414329526688281321/models/m-23e221084784425ab4eeeb38b58e7857/artifacts
+flavors:
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.1
+mlflow_version: 3.5.1
+model_id: m-23e221084784425ab4eeeb38b58e7857
+model_size_bytes: 394428
+model_uuid: m-23e221084784425ab4eeeb38b58e7857
+prompts: null
+run_id: 34a76261635241fcb0c3da0b860c4645
+utc_time_created: '2025-11-05 00:29:31.050663'
