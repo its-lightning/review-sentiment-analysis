@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/b61a7e8e3fee4a6c83698b9376a2df04/artifacts
+end_time: 1762406075560
+entry_point_name: ''
+experiment_id: '694456358438657432'
+lifecycle_stage: active
+run_id: b61a7e8e3fee4a6c83698b9376a2df04
+run_name: SGDClassifier_Lightweight
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762406069844
+status: 3
+tags: []
+user_id: vani

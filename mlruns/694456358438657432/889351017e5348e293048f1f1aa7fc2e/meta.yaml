@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/889351017e5348e293048f1f1aa7fc2e/artifacts
+end_time: 1762406898029
+entry_point_name: ''
+experiment_id: '694456358438657432'
+lifecycle_stage: active
+run_id: 889351017e5348e293048f1f1aa7fc2e
+run_name: Lightweight_Top3_Stacking
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762406594374
+status: 4
+tags: []
+user_id: vani

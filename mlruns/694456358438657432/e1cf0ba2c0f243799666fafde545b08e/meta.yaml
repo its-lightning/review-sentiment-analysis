@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/e1cf0ba2c0f243799666fafde545b08e/artifacts
+end_time: 1762407321490
+entry_point_name: ''
+experiment_id: '694456358438657432'
+lifecycle_stage: active
+run_id: e1cf0ba2c0f243799666fafde545b08e
+run_name: Top3_Ensemble_Lightweight
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762407318480
+status: 3
+tags: []
+user_id: vani

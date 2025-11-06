@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/f77deda5c0ad43f3b806cc21942fd5db/artifacts
+end_time: 1762413182175
+entry_point_name: ''
+experiment_id: '694456358438657432'
+lifecycle_stage: active
+run_id: f77deda5c0ad43f3b806cc21942fd5db
+run_name: PassiveAggressive_Lightweight
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762413176838
+status: 3
+tags: []
+user_id: vani

@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/bd8d9605b71045b6b8a7d47af30280a5/artifacts
+end_time: 1762413235112
+entry_point_name: ''
+experiment_id: '694456358438657432'
+lifecycle_stage: active
+run_id: bd8d9605b71045b6b8a7d47af30280a5
+run_name: ComplementNB_Lightweight
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762413234774
+status: 3
+tags: []
+user_id: vani

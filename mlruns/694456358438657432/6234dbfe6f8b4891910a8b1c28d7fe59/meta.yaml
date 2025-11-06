@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/6234dbfe6f8b4891910a8b1c28d7fe59/artifacts
+end_time: 1762406054548
+entry_point_name: ''
+experiment_id: '694456358438657432'
+lifecycle_stage: active
+run_id: 6234dbfe6f8b4891910a8b1c28d7fe59
+run_name: LogisticRegression_Lightweight
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762406008758
+status: 3
+tags: []
+user_id: vani

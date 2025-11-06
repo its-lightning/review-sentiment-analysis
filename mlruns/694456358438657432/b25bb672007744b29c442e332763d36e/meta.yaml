@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/b25bb672007744b29c442e332763d36e/artifacts
+end_time: 1762413234773
+entry_point_name: ''
+experiment_id: '694456358438657432'
+lifecycle_stage: active
+run_id: b25bb672007744b29c442e332763d36e
+run_name: MultinomialNB_Lightweight
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762413234403
+status: 3
+tags: []
+user_id: vani

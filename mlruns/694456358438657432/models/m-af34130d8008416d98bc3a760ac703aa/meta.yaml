@@ -1,0 +1,10 @@
+artifact_location: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/models/m-af34130d8008416d98bc3a760ac703aa/artifacts
+creation_timestamp: 1762413507462
+experiment_id: '694456358438657432'
+last_updated_timestamp: 1762413508801
+model_id: m-af34130d8008416d98bc3a760ac703aa
+model_type: null
+name: meta_learner
+source_run_id: be87e44f975d4b6d915ef83c23c083da
+status: 3
+status_message: null

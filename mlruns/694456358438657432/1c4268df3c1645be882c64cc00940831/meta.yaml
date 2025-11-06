@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/1c4268df3c1645be882c64cc00940831/artifacts
+end_time: 1762406133496
+entry_point_name: ''
+experiment_id: '694456358438657432'
+lifecycle_stage: active
+run_id: 1c4268df3c1645be882c64cc00940831
+run_name: BernoulliNB_Lightweight
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762406132813
+status: 3
+tags: []
+user_id: vani
