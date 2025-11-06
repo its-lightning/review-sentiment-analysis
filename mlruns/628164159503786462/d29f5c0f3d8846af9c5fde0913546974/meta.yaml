@@ -1,0 +1,15 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/628164159503786462/d29f5c0f3d8846af9c5fde0913546974/artifacts
+deleted_time: 1762372544634
+end_time: 1762372540167
+entry_point_name: ''
+experiment_id: '628164159503786462'
+lifecycle_stage: deleted
+run_id: d29f5c0f3d8846af9c5fde0913546974
+run_name: DecisionTree_GridSearch
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762372383641
+status: 4
+tags: []
+user_id: itslightning

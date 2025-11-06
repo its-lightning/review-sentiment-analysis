@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/628164159503786462/654555b9b2144fe0b1ead119ea2203b9/artifacts
+end_time: 1762376595227
+entry_point_name: ''
+experiment_id: '628164159503786462'
+lifecycle_stage: active
+run_id: 654555b9b2144fe0b1ead119ea2203b9
+run_name: ExtraTrees_Binary
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762376584518
+status: 3
+tags: []
+user_id: itslightning

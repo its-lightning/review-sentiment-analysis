@@ -1,0 +1,15 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/8e0d9c30d9d04ff596602627f74705cc/artifacts
+deleted_time: 1762391132979
+end_time: 1762390380872
+entry_point_name: ''
+experiment_id: '694456358438657432'
+lifecycle_stage: deleted
+run_id: 8e0d9c30d9d04ff596602627f74705cc
+run_name: AdaBoost_Lightweight
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762390185051
+status: 4
+tags: []
+user_id: itslightning

@@ -1,0 +1,15 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/ca12390c924542c99b3aa6dd8aa38e14/artifacts
+deleted_time: 1762391132980
+end_time: 1762390185047
+entry_point_name: ''
+experiment_id: '694456358438657432'
+lifecycle_stage: deleted
+run_id: ca12390c924542c99b3aa6dd8aa38e14
+run_name: BernoulliNB_Lightweight
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762390183613
+status: 3
+tags: []
+user_id: itslightning

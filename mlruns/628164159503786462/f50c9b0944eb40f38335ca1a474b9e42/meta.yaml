@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/628164159503786462/f50c9b0944eb40f38335ca1a474b9e42/artifacts
+end_time: 1762377391019
+entry_point_name: ''
+experiment_id: '628164159503786462'
+lifecycle_stage: active
+run_id: f50c9b0944eb40f38335ca1a474b9e42
+run_name: MultinomialNB_Binary
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762377390934
+status: 3
+tags: []
+user_id: itslightning

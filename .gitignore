@@ -1,10 +1,14 @@
 All_Beauty.jsonl
+Cell_Phones_and_Accessories_5.json
 test.ft.txt
 GB_category_id.json
 
 venv/
 .venv/
 env
+
+cache/
+.cache/
 
 *.jsonl
 *.csv

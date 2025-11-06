@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/628164159503786462/1e9601b1657b4ce2bc9eea8c88720585/artifacts
+end_time: 1762377168745
+entry_point_name: ''
+experiment_id: '628164159503786462'
+lifecycle_stage: active
+run_id: 1e9601b1657b4ce2bc9eea8c88720585
+run_name: XGBoost_Binary
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762376612133
+status: 3
+tags: []
+user_id: itslightning

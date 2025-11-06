@@ -1,0 +1,15 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/628164159503786462/e9442b9983674630a0e29ed8139dc6a1/artifacts
+deleted_time: 1762371747177
+end_time: 1762371446404
+entry_point_name: ''
+experiment_id: '628164159503786462'
+lifecycle_stage: deleted
+run_id: e9442b9983674630a0e29ed8139dc6a1
+run_name: ComplementNB
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762371446312
+status: 3
+tags: []
+user_id: itslightning

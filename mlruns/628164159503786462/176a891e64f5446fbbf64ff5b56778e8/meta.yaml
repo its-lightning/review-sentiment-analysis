@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/628164159503786462/176a891e64f5446fbbf64ff5b56778e8/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '628164159503786462'
+lifecycle_stage: active
+run_id: 176a891e64f5446fbbf64ff5b56778e8
+run_name: DecisionTree_Baseline
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762387593093
+status: 1
+tags: []
+user_id: itslightning

@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/628164159503786462/d7339c39cc954134a1f6d624e0669e24/artifacts
+end_time: 1762376612128
+entry_point_name: ''
+experiment_id: '628164159503786462'
+lifecycle_stage: active
+run_id: d7339c39cc954134a1f6d624e0669e24
+run_name: RandomForest_Binary
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762376595237
+status: 3
+tags: []
+user_id: itslightning

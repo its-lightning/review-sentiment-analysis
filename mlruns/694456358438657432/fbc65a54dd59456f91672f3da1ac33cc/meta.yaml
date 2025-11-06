@@ -1,0 +1,15 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/fbc65a54dd59456f91672f3da1ac33cc/artifacts
+deleted_time: 1762391132997
+end_time: 1762390118590
+entry_point_name: ''
+experiment_id: '694456358438657432'
+lifecycle_stage: deleted
+run_id: fbc65a54dd59456f91672f3da1ac33cc
+run_name: PassiveAggressive_Lightweight
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762390110252
+status: 3
+tags: []
+user_id: itslightning

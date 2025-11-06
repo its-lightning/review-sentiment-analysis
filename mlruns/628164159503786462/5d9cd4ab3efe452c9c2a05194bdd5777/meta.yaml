@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/628164159503786462/5d9cd4ab3efe452c9c2a05194bdd5777/artifacts
+end_time: 1762389140539
+entry_point_name: ''
+experiment_id: '628164159503786462'
+lifecycle_stage: active
+run_id: 5d9cd4ab3efe452c9c2a05194bdd5777
+run_name: LogisticRegression_Lightweight
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762388945666
+status: 4
+tags: []
+user_id: itslightning

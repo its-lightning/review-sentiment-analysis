@@ -1,0 +1,15 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/628164159503786462/152ab580133d4fd48923de51ac526515/artifacts
+deleted_time: 1762372114879
+end_time: 1762371894113
+entry_point_name: ''
+experiment_id: '628164159503786462'
+lifecycle_stage: deleted
+run_id: 152ab580133d4fd48923de51ac526515
+run_name: XGBoost_GridSearch
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762371861252
+status: 4
+tags: []
+user_id: itslightning

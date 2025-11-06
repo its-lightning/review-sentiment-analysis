@@ -1,0 +1,15 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/628164159503786462/2acc6aa617384f158c39555b8a193f17/artifacts
+deleted_time: 1762372544650
+end_time: 1762372375219
+entry_point_name: ''
+experiment_id: '628164159503786462'
+lifecycle_stage: deleted
+run_id: 2acc6aa617384f158c39555b8a193f17
+run_name: SGDClassifier_GridSearch
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762372346591
+status: 3
+tags: []
+user_id: itslightning
