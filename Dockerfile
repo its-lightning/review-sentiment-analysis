@@ -34,6 +34,8 @@ COPY app.py .
 COPY fix_models.py .
 COPY ensemble_sentiment_model.pkl .
 COPY tfidf_vectorizer.pkl .
+COPY ensemble_sentiment_model_final.pkl .
+COPY tfidf_vectorizer_final.pkl .
 COPY templates/ ./templates/
 COPY static/ ./static/
 
