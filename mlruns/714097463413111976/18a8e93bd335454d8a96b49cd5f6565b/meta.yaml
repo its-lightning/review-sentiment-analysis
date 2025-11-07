@@ -1,0 +1,15 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/714097463413111976/18a8e93bd335454d8a96b49cd5f6565b/artifacts
+deleted_time: 1762471009667
+end_time: 1762469276380
+entry_point_name: ''
+experiment_id: '714097463413111976'
+lifecycle_stage: deleted
+run_id: 18a8e93bd335454d8a96b49cd5f6565b
+run_name: Ensemble_Model_Stacking_Classifier
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762469041112
+status: 3
+tags: []
+user_id: itslightning

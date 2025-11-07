@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/87020cfadb3e43a5ba3b5dc678508b0e/artifacts
+end_time: 1762459253016
+entry_point_name: ''
+experiment_id: '694456358438657432'
+lifecycle_stage: active
+run_id: 87020cfadb3e43a5ba3b5dc678508b0e
+run_name: RidgeClassifier
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762459229931
+status: 3
+tags: []
+user_id: itslightning

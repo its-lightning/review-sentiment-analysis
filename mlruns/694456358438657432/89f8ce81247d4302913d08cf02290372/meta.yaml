@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/89f8ce81247d4302913d08cf02290372/artifacts
+end_time: 1762459329637
+entry_point_name: ''
+experiment_id: '694456358438657432'
+lifecycle_stage: active
+run_id: 89f8ce81247d4302913d08cf02290372
+run_name: BernoulliNB
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762459328121
+status: 3
+tags: []
+user_id: itslightning

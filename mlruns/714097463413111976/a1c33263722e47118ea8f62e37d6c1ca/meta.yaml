@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/714097463413111976/a1c33263722e47118ea8f62e37d6c1ca/artifacts
+end_time: 1762471631276
+entry_point_name: ''
+experiment_id: '714097463413111976'
+lifecycle_stage: active
+run_id: a1c33263722e47118ea8f62e37d6c1ca
+run_name: Top3_Stacking_Classifier
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762471389862
+status: 3
+tags: []
+user_id: itslightning

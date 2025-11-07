@@ -1,0 +1,15 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/714097463413111976/cfc561c73cb84311bf56f91808d16f61/artifacts
+deleted_time: 1762471009675
+end_time: 1762470983649
+entry_point_name: ''
+experiment_id: '714097463413111976'
+lifecycle_stage: deleted
+run_id: cfc561c73cb84311bf56f91808d16f61
+run_name: LogisticRegression_Baseline
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762470983394
+status: 4
+tags: []
+user_id: itslightning

@@ -1,0 +1,1 @@
+LinearSVC(C=0.8, class_weight='balanced', max_iter=1200, random_state=42)

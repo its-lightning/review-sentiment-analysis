@@ -1,0 +1,14 @@
+artifact_uri: file:///c:\Users\itslightning\Desktop\projects\review_sentiment_analysis\mlruns/694456358438657432/ce0c8caf23db46d7b6404add2d0d4905/artifacts
+end_time: 1762459326656
+entry_point_name: ''
+experiment_id: '694456358438657432'
+lifecycle_stage: active
+run_id: ce0c8caf23db46d7b6404add2d0d4905
+run_name: LinearSVC
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1762459269115
+status: 3
+tags: []
+user_id: itslightning
